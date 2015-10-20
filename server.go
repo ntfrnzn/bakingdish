@@ -1,82 +1,70 @@
 package main
 
 import (
-	"reflect"
 	"encoding/json"
 	"github.com/gocraft/web"
 	"github.com/ntfrnzn/bakingdish/models"
 	"io"
 	"io/ioutil"
+	"reflect"
 	// "log"
+	"fmt"
 	"net/http"
-        "fmt"
 	// "github.com/corneldamian/json-binding"
 	// "strings"
-        // "github.com/gocraft/health"
+	// "github.com/gocraft/health"
 )
-
 
 type Query struct {
 }
 
 type RecipeId struct {
-	Id string
-	Name string
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type RecipeApi interface {
 	GetRecipe(id string) (*models.Recipe, error)
 	PostRecipe(recipe *models.Recipe) (string, error)
-        SearchRecipe(query *Query) ([]RecipeId, error)
+	SearchRecipe(query *Query) ([]RecipeId, error)
 }
-
 
 type TestingApi struct {
 }
 
-
 func (TestingApi) GetRecipe(id string) (*models.Recipe, error) {
 	web.Logger.Println("get recipe for id: " + id)
-	return models.GetExample() 
+	return models.GetExample()
 }
 
 func (TestingApi) SearchRecipe(query *Query) ([]RecipeId, error) {
 	web.Logger.Println("search recipes for id")
-	return []RecipeId{ {"dummy_id","Indian-Style Grilled Tuna Steaks with Aromatic Spice Paste"} }, nil
+	return []RecipeId{{"dummy_id", "Indian-Style Grilled Tuna Steaks with Aromatic Spice Paste"}}, nil
 }
 
-func (TestingApi) PostRecipe( recipe *models.Recipe) (string, error) {
+func (TestingApi) PostRecipe(recipe *models.Recipe) (string, error) {
 	content, _ := json.Marshal(recipe)
 	web.Logger.Println(string(content))
 	content, err := json.Marshal(recipe)
-	if (err != nil){
+	if err != nil {
 		return "", err
 	}
-	web.Logger.Println( "posted the recipe: " + string(content))
-        return "dummy_id", nil
+	web.Logger.Println("posted the recipe: " + string(content))
+	return "dummy_id", nil
 }
-
-
 
 type Context struct {
-   api RecipeApi
+	api RecipeApi
 }
-
 
 func (c *Context) TestApiMiddleware(rw web.ResponseWriter, req *web.Request, next web.NextMiddlewareFunc) {
-        web.Logger.Println("here we are in middleware")
 	c.api = TestingApi{}
-	web.Logger.Println( reflect.TypeOf( c ).String() )
-	web.Logger.Println( reflect.TypeOf( (*c).api ).String() )
-        next(rw, req)
+	next(rw, req)
 }
 
-
-
-
 func (c *Context) GetRecipe(rw web.ResponseWriter, req *web.Request) {
-        id := req.PathParams["id"]
-        r, _ := (*c).api.GetRecipe(id)
+	id := req.PathParams["id"]
+	r, _ := (*c).api.GetRecipe(id)
 	rw.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(rw).Encode(r)
 }
@@ -98,16 +86,15 @@ func (c *Context) PostRecipe(rw web.ResponseWriter, req *web.Request) {
 		}
 	}
 
-        id, err := (*c).api.PostRecipe(&recipe)
-        if (err != nil ){
+	id, err := (*c).api.PostRecipe(&recipe)
+	if err != nil {
 		panic(err)
 	}
-        
+
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.WriteHeader(http.StatusCreated)
 	fmt.Fprint(rw, `{"id":"`+id+`"}"`)
 }
-
 
 func (c *Context) SearchRecipe(rw web.ResponseWriter, req *web.Request) {
 	var query Query
@@ -118,24 +105,23 @@ func (c *Context) SearchRecipe(rw web.ResponseWriter, req *web.Request) {
 	if err := req.Body.Close(); err != nil {
 		panic(err)
 	}
+	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	if err := json.Unmarshal(body, &query); err != nil {
-		rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		rw.WriteHeader(422) // unprocessable entity
 		if err := json.NewEncoder(rw).Encode(err); err != nil {
 			panic(err)
 		}
+	} else {
+		results, err := (*c).api.SearchRecipe(&query)
+		if err != nil {
+			rw.WriteHeader(500)
+			panic(err)
+		} else {
+			rw.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(rw).Encode(results) // prefaces with {"Offset": 0} ??
+		}
 	}
-
-        results, err := (*c).api.SearchRecipe(&query)
-        if (err != nil ){
-		panic(err)
-	}
-        
-	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	json.NewEncoder(rw).Encode(results)
 }
-
-
 
 func main() {
 
@@ -145,10 +131,10 @@ func main() {
 	// a web.StaticOption
 
 	// Create your router
-	router := web.New( Context{}  ).
-		Middleware(web.LoggerMiddleware).     // Use some included middleware
-		Middleware(web.ShowErrorsMiddleware). // ...
-		Middleware((*Context).TestApiMiddleware).   // use the Test version of the methods
+	router := web.New(Context{}).
+		Middleware(web.LoggerMiddleware).         // Use some included middleware
+		Middleware(web.ShowErrorsMiddleware).     // ...
+		Middleware((*Context).TestApiMiddleware). // use the Test version of the methods
 		Middleware(web.StaticMiddlewareFromDir(http.Dir("static"), web.StaticOption{Prefix: "", IndexFile: "index.html"})).
 		Post("/recipe", (*Context).PostRecipe).
 		Get("/recipe/:id", (*Context).GetRecipe).
