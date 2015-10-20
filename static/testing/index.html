@@ -1,38 +1,21 @@
 <!doctype html>
-<html ng-app>
+<html ng-app="recipeApp">
   <head>
-    <title>Recipe AngularJS
-    </title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js">
-    </script>
-    <script src="/testing/recipe.js">
-    </script>
+    <title>Recipe AngularJS</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+    <script src="/testing/recipe.js"></script>
   </head>
 
-  <body>
-    <div ng-controller="Recipe">
-      <div class="recipe"><em>{{recipe.name}}
-      </em>
-      <p>Makes {{recipe.servings}} servings
-      </p>
-      <div class="ingredients"><p>Ingredients:
-      </p>
+  <body ng-controller="RecipeCtrl">
+      <em>{{recipe.name}}</em>
+      <p>Makes {{recipe.servings}} servings</p>
+      <p>Ingredients: </p>
       <ul>
-      <li data-ng-repeat="x in recipe.ingredients">
-	{{ x }}
-      </li>
+      <li data-ng-repeat="x in recipe.ingredients">{{ x }}</li>
       </ul>
-      </div>
-      <div class="instructions">
-      <p>Instructions:
-      </p>
+      <p>Instructions: </p>
       <ul>
-      <li data-ng-repeat="x in recipe.instructions">
-	{{ x }}
-      </li>
+      <li data-ng-repeat="x in recipe.instructions">{{ x }}</li>
       </ul>
-      </div>
-      </div>
-    </div>
   </body>
 </html>
