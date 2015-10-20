@@ -1,26 +1,75 @@
-<!doctype html>
-<html ng-app="recipeApp">
-  <head>
-    <title>Recipe AngularJS</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
-    <script src="/testing/recipe.js"></script>
-  </head>
+<!DOCTYPE html>
 
-  <body>
-    <div class="recipe-search" ng-controller="SearchCtrl"></div>
-    <div class="recipe-display" ng-controller="RecipeCtrl">
-      <div class="title">{{recipe.name}}</div>
-      <p>Makes {{recipe.servings}} servings</p>
-      <div class="ingredients">Ingredients:
-      <ul>
-      <li data-ng-repeat="x in recipe.ingredients">{{ x }}</li>
-      </ul>
-      </div>
-      <div class="instructions">Instructions:
-      <ul>
-      <li data-ng-repeat="x in recipe.instructions">{{ x }}</li>
-      </ul>
+<html ng-app="recipeApp">
+<head>
+  <meta name="generator" content="HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.15), see www.w3.org">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Recipe AngularJS</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js" type="text/javascript"></script>
+  <script src="/testing/recipe.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" type="text/css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Baking Dish</h1>
+
+      <p class="lead">Let's have a look at recipes</p>
+    </div>
+
+    <div class="recipe-search" ng-controller="SearchCtrl">
+      <div class="title panel panel-default">
+        <div class="panel-heading">
+          <h3>Search</h3>
+        </div>
+        <div class="panel-body">
+	  <button type="button" class="btn btn-default">Not Yet Implemented</button>
+	</div>
       </div>
     </div>
-  </body>
+  
+	  
+    <div class="recipe-display" ng-controller="RecipeCtrl">
+      <div class="title panel panel-success">
+        <div class="panel-heading">
+          <h3>{{recipe.name}}</h3>
+
+          <p>Makes {{recipe.servings}} servings</p>
+        </div>
+
+        <div class="panel-body">
+
+          <div class="ingredients panel panel-info">
+            <div class="panel-heading">
+              Ingredients:
+            </div>
+
+            <div class="panel-body">
+              <ul class="list-group">
+                <li class="list-group-item" data-ng-repeat="x in recipe.ingredients">{{ x }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="instructions panel panel-info">
+            <div class="panel-heading">
+              Instructions:
+            </div>
+
+            <div class="panel-body">
+              <ul class="list-group">
+                <li class="list-group-item" data-ng-repeat="x in recipe.instructions">{{ x }}</li>
+              </ul>
+            </div>
+          </div>
+
+	</div>
+      </div>
+    </div>
+  </div>
+</body>
 </html>
