@@ -26,14 +26,14 @@
           <h3>Search</h3>
         </div>
         <div class="panel-body">
-	  <button type="button" class="btn btn-default" ng-click="searchAll()">Search All</button>
-	  <hr/>
-	  <table class="table table-hover">
-	    <!thead>
-	      <tr>
-		<th>Identifier</th>
-		<th>Name</th>
-	      </tr>
+	  <button type="button" class="btn btn-default" ng-click="searchRecipe({})">Search All</button>
+	  <button type="button" class="btn btn-default" ng-click="searchRecipe({&quot;id&quot;:&quot;nothing&quot; })">Search Something</button>
+	  <table class="table table-hover" ng-show="search_results.length > 0">
+	    <thead>
+	    <tr>
+	      <th>Identifier</th>
+	      <th>Name</th>
+	    </tr>
 	    </thead>
 	    <tbody>
 	      <tr data-ng-repeat="recipe_item in search_results" ng-click="getSelected( recipe_item );">
@@ -42,157 +42,161 @@
 	      </tr>
 	    </tbody>
 	  </table>
-	</div>
-      </div>
-    </div>
-  
-
-<div class="container-fluid">
-  <div class="row">
-  <div class="col-xs-6 col-md-6">
-    <div class="recipe-display" ng-show="true"> <!--"recipe.name"-->
-      <div class="title panel panel-success">
-        <div class="panel-heading">
-          <h3>{{recipe.name}}</h3>
-
-          <p>Makes {{recipe.servings}} servings</p>
         </div>
-
-        <div class="panel-body">
-
-          <div class="ingredients panel panel-info">
-            <div class="panel-heading">
-              Ingredients:
-            </div>
-
-            <div class="panel-body">
-              <ul class="list-group">
-                <li class="list-group-item" data-ng-repeat="x in recipe.ingredients">{{ x }}</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="instructions panel panel-info">
-            <div class="panel-heading">
-              Instructions:
-            </div>
-
-            <div class="panel-body">
-              <ul class="list-group">
-                <li class="list-group-item" data-ng-repeat="x in recipe.instructions">{{ x }}</li>
-              </ul>
-            </div>
-          </div>
-
-	</div>
       </div>
     </div>
-  </div> <!-- class="col-xs-6 col-md-6"-->
+    
+    <div class="container">
+      <button type="button" class="btn btn-default" ng-click="editing=true">Create New Recipe</button>
+    </div>
+    
+    <div class="container-fluid">
+      <div class="row">
 
-    <div class="col-xs-6 col-md-6">
-    <div class="recipe-entry" ng-show="true">
-          <div class="ingredients panel panel-info">
-            <div class="panel-heading">
-              Create a recipe:
-            </div>
-	  
-            <div class="panel-body">
-	      <form class="form-horizontal">
-		<fieldset>
-		  
-		  <!-- Text input-->
-		  <div class="form-group">
-		    <label class="col-md-4 control-label" for="recipe_name">Name</label>
-		    <div class="col-md-4">
-		      <input id="recipe_name" name="recipe_name" placeholder="El Delicioso"
-			     ng-model="recipe.name"  ng-trim="true"
-			     class="form-control input-md" required="" type="text"/>
-		      <span class="help-block">The name of this delicacy</span>
+	<div class="col-xs-6 col-md-6">
+	  <div class="recipe-entry" ng-show="editing">
+            <div class="ingredients panel panel-info">
+              <div class="panel-heading">
+		Create a recipe and save it
+              </div>
+	      
+              <div class="panel-body">
+		<form class="form-horizontal">
+		  <fieldset>
+		    
+		    <div class="form-group">
+		      <label class="col-md-2 control-label" for="recipe_name">Name</label>
+		      <div class="col-md-6">
+			<input id="recipe_name" name="recipe_name" placeholder="El Delicioso"
+			       ng-model="recipe.name"  ng-trim="true"
+			       class="form-control input-md" required="" type="text"/>
+			<span class="help-block">The name of this delicacy</span>
+		      </div>
 		    </div>
-		  </div>
-
-		  <!-- Text input-->
-		  <div class="form-group">
-		    <label class="col-md-4 control-label"
-			   for="servings">Servings</label>
-		    <div class="col-md-4">
-		      <input id="servings" name="servings" placeholder="4"
-			     ng-model="recipe.servings"  ng-trim="true"
-			     class="form-control input-md" required="" type="text">
-		      
+		    
+		    <div class="form-group">
+		      <label class="col-md-2 control-label"
+			     for="servings">Servings</label>
+		      <div class="col-md-10">
+			<input id="servings" name="servings" placeholder="4"
+			       ng-model="recipe.servings"  ng-trim="true"
+			       class="form-control input-md" required="" type="text">
+			
+		      </div>
 		    </div>
-		  </div>
-
-		  <!-- Textarea -->
-		  <div class="form-group">
-		    <label class="col-md-4 control-label"
-			   for="ingredient_list">Ingredients</label>
-		    <div class="col-md-4">
-		      <textarea class="form-control" id="instruction_list"
-				ng-model="recipe.ingredients" ng-list="&#10;" ng-trim="false"
-				name="instruction_list">
-1/2 tsp
-salt 1 egg
-		      </textarea>
+		    
+		    <div class="form-group">
+		      <label class="col-md-4 control-label"
+			     for="ingredient_list">Ingredients</label>
+		      <div class="col-md-4">
+			<textarea class="form-control" id="instruction_list"
+				  ng-model="recipe.ingredients" ng-list="&#10;" ng-trim="false"
+				  name="instruction_list">
+			</textarea>
+		      </div>
 		    </div>
-		  </div>
-
-		  <!-- Textarea -->
-		  <div class="form-group">
-		    <label class="col-md-4 control-label"
-			   for="instruction_list">Instructions</label>
-		    <div class="col-md-4">
-		      <textarea class="form-control" id="instruction_list"
-				ng-model="recipe.instructions" ng-list="&#10;" ng-trim="false"
-				name="ingredient_list"></textarea>
+		    
+		    <div class="form-group">
+		      <label class="col-md-4 control-label"
+			     for="instruction_list">Instructions</label>
+		      <div class="col-md-4">
+			<textarea class="form-control" id="instruction_list"
+				  ng-model="recipe.instructions" ng-list="&#10;" ng-trim="false"
+				  name="ingredient_list"></textarea>
+		      </div>
 		    </div>
-		  </div>
-
-		  <!-- Text input-->
-		  <div class="form-group">
-		    <label class="col-md-4 control-label" for="textinput">Text
-		      Input</label>
-		    <div class="col-md-4">
-		      <input id="textinput" name="preparation_time" placeholder="15 minutes"
-			     ng-model="recipe.preparation_time"  ng-trim="true"
-			     class="form-control input-md" required="" type="text">
-		      <span class="help-block">help</span>
+		    
+		    <div class="form-group">
+		      <label class="col-md-4 control-label" for="textinput">Preparation time</label>
+		      <div class="col-md-4">
+			<input id="prep_time" name="preparation_time" placeholder="15 minutes"
+			       ng-model="recipe.preparation_time"  ng-trim="true"
+			       class="form-control input-md" required="" type="text">
+		      </div>
 		    </div>
-		  </div>
-
-		  <!-- Text input-->
-		  <div class="form-group">
-		    <label class="col-md-4 control-label" for="textinput">Text
-		      Input</label>
-		    <div class="col-md-4">
-		      <input id="textinput" name="cooking_time" placeholder="15 minutes"
-			     ng-model="recipe.cooking_time"  ng-trim="true"
-			     class="form-control input-md" required="" type="text">
-		      <span class="help-block">help</span>
+		    
+		    <div class="form-group">
+		      <label class="col-md-4 control-label" for="textinput">Cooking time</label>
+		      <div class="col-md-4">
+			<input id="textinput" name="cooking_time" placeholder="30 minutes"
+			       ng-model="recipe.cooking_time"  ng-trim="true"
+			       class="form-control input-md" required="" type="text">
+		      </div>
 		    </div>
-		  </div>
-
-		  <!-- Select Multiple -->
-		  <div class="form-group">
-		    <label class="col-md-4 control-label" for="recipe_tags">Select some
-		      tags</label>
-		    <div class="col-md-4">
-		      <select id="recipe_tags" name="tags" class="form-control" multiple="multiple">
-				ng-model="recipe.tags" ng-list="&#10;" ng-trim="false"/>
-			<option value="Fish">Fish</option>
-			<option value="Poultry">Poultry</option>
-			<option value="Vegetarian">Vegetarian</option>
-		      </select>
+		    
+		    <div class="form-group">
+		      <label class="col-md-4 control-label" for="recipe_tags">Select some
+			tags</label>
+		      <div class="col-md-4">
+			<select id="recipe_tags" name="recipe_tags" class="form-control" multiple="multiple"
+				ng-model="recipe.tags"  ng-trim="false">
+			  <option value="Fish">Fish</option>
+			  <option value="Poultry">Poultry</option>
+			  <option value="Beef">Poultry</option>
+			  <option value="Vegetarian">Vegetarian</option>
+			</select>
+			<!--pre>{{recipe.tags | json}}</pre-->
+		      </div>
 		    </div>
-		  </div>
-
-		</fieldset>
-	      </form>
+		  </fieldset>
+		  <button type="button" class="btn btn-default" ng-click="saveRecipe(recipe)">Save Recipe</button>
+		</form>
+	      </div>
 	    </div>
 	  </div>
-  </div> <!--div class="col-xs-6 col-md-6"-->
-  </div> <!--div class="row"-->
-  </div> <!--div class="container-fluid"-->
-    </div>
+	</div> 
+
+	<div class="col-xs-6 col-md-6">
+	  <div class="recipe-display" ng-show="editing || recipe.name"> 
+	    <div class="title panel panel-success">
+              <div class="panel-heading">
+		<h3>{{recipe.name}}</h3>
+		
+		<p ng-show="recipe.servings">Makes {{recipe.servings}} servings</p>
+              </div>
+	      
+              <div class="panel-body">
+		
+		<div class="ingredients panel panel-info">
+		  <div class="panel-heading">
+		    Ingredients:
+		  </div>
+		  
+		  <div class="panel-body">
+		    <ul class="list-group">
+                      <li class="list-group-item" data-ng-repeat="x in recipe.ingredients">{{ x }}</li>
+		    </ul>
+		  </div>
+		</div>
+		
+		<div class="instructions panel panel-info">
+		  <div class="panel-heading">
+		    Instructions:
+		  </div>
+		  
+		  <div class="panel-body">
+		    <ul class="list-group">
+                      <li class="list-group-item" data-ng-repeat="x in recipe.instructions">{{ x }}</li>
+		    </ul>
+		  </div>
+		</div>
+		
+
+		<div class="tags panel panel-info">
+		  <div class="panel-heading">Recipe Tags:</div>
+		  <div class="panel-body">{{ recipe.tags.join(", ") }}</div>
+                  <!--pre>{{recipe.tags | json}}</pre-->
+		</div>
+
+	      </div>
+	    </div>
+	  </div>
+	</div> 
+
+	
+	
+      </div> <!--div class="row"-->
+    </div> <!--div class="container-fluid"-->
+  </div>
 </body>
 </html>

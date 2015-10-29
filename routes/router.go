@@ -40,6 +40,7 @@ func getPostedBody(req *web.Request) ([]byte, error) {
 	if err := req.Body.Close(); err != nil {
 		return nil, err
 	}
+	fmt.Println(string(body))
 
 	return body, nil
 }
@@ -72,9 +73,14 @@ func (c *Context) PostRecipe(rw web.ResponseWriter, req *web.Request) {
 		return
 	}
 
+	var result models.RecipeId
+	result.Id = id
+	result.Name = recipe.Name
+	
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	fmt.Fprint(rw, `{"id":"`+id+`"}"`)
+	json.NewEncoder(rw).Encode(result)
+
 }
 
 func (c *Context) SearchRecipe(rw web.ResponseWriter, req *web.Request) {

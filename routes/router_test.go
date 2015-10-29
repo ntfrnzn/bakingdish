@@ -167,5 +167,31 @@ func TestSearchNone(t *testing.T) {
 	if len(results) != count {
 		t.Errorf("expected %d query results, got %d.", count, len(results))
 	}
+}
+
+
+func TestPostRecipe(t *testing.T) {
+	router := SetupTest()
+
+	request, _ := http.NewRequest("POST", "/recipe", bytes.NewReader([]byte(`{"name":"This is just a bare test"}`)))
+	recorder := httptest.NewRecorder()
+
+	router.ServeHTTP(recorder, request)
+
+	if recorder.Code != 201 {
+		t.Errorf("should have gotten 201 Created, got %s.", recorder.Code)
+	}
+
+	body := strings.TrimSpace(string(recorder.Body.Bytes()))
+	var result models.RecipeId
+
+	err := json.Unmarshal(recorder.Body.Bytes(), &result)
+	if err != nil {
+		t.Errorf("could not unmarshal body <<%s>>", body)
+	}
+
+	if result.Id == "" {
+		t.Errorf("expected a non-empty recipe id")
+	}
 
 }

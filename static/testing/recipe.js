@@ -16,13 +16,24 @@ recipeApp.controller('RecipeCtrl', function ($scope, $http){
 	);
     };
 
-    $scope.searchAll = function (){
-	$http.post('/search', queryAll).success(
+    $scope.searchRecipe = function ( queryItem ){
+	$scope.recipe={}
+	$http.post('/search', queryItem).success(
 	    function(data) {
 		$scope.search_results = data;
 	    }
 	);
     };
+
+    $scope.saveRecipe = function ( recipe ){
+	$http.post('/recipe', recipe).success(
+	    function(data) {
+		$scope.search_results = data;
+	    }
+	);
+    };
+
+    
 });
     
 

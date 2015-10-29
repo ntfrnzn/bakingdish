@@ -51,5 +51,5 @@ func (TestingApi) PostRecipe(recipe *Recipe) (string, error) {
 		return "", err
 	}
 	web.Logger.Println("posted the recipe: " + string(content))
-	return "dummy_id", nil
+	return "not_a_real_id", nil
 }
