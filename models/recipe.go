@@ -1,8 +1,12 @@
 package models
 
-import "os"
-import "log"
-import "encoding/json"
+import (
+	"crypto/md5"
+	"encoding/hex"
+	"encoding/json"
+	"log"
+	"os"
+)
 
 type Recipe struct {
 	Name         string   `json:"name"`
@@ -16,12 +20,35 @@ type Recipe struct {
 	Tags []string `json:"tags,omitempty"`
 }
 
-func GetExample() (*Recipe, error) {
+func GetId(text string) string {
+	// for two lines, this is actually a little tricky (for me?),
+	// with conversions between string and []byte and the
+	// details of slice <--> array exchange
+	encode := md5.Sum([]byte(text))
+	return hex.EncodeToString(encode[:])
+}
 
+// same as the previous, but now as a struct method
+func (recipe *Recipe) GetId() string {
+	if recipe.Name == "" {
+		return "null_id"
+	}
+	recode := md5.Sum([]byte(recipe.Name))
+	return hex.EncodeToString(recode[:])
+}
+
+
+func GetTestRecipeDir () string {
+	return "/Users/nfranzen/go/src/github.com/ntfrnzn/bakingdish/test/recipes/"
+}
+
+
+func GetExample() (*Recipe, error) {
 	var recipe Recipe
 
 	logger := log.New(os.Stdout, "RECIPE: ", log.LstdFlags)
-	readFile, err := os.Open("/Users/nfranzen/go/src/github.com/ntfrnzn/bakingdish/test/recipe.json")
+        //testDir := "/Users/nfranzen/go/src/github.com/ntfrnzn/bakingdish/test/recipes/"
+	readFile, err := os.Open( GetTestRecipeDir() + "4a6168e3f784031f6b304319cd20101f.json")
 	if err != nil {
 		logger.Output(0, err.Error())
 		return nil, err
