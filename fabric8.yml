@@ -1,0 +1,9 @@
+---
+buildName: "bakingdish"
+links:
+  Git: "https://github.com/ntfrnzn/bakingdish"
+  Job: "http://jenkins.f8.spcz5dcpc9.stackpoint.io/job/bakingdish"
+  Staging: "http://10.200.196.37:80/kubernetes/pods?namespace=f8-staging"
+environments:
+  Staging: "f8-staging"
+useLocalFlow: true
